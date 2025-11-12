@@ -63,15 +63,32 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
     stack = error.stack;
   }
 
+  const is404 = isRouteErrorResponse(error) && error.status === 404;
+
   return (
-    <main className="pt-16 p-4 container mx-auto">
-      <h1>{message}</h1>
-      <p>{details}</p>
-      {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
-          <code>{stack}</code>
-        </pre>
-      )}
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="text-center px-4 max-w-2xl mx-auto">
+        <h1 className="text-9xl font-bold text-gray-800 mb-4">
+          {is404 ? "404" : "Error"}
+        </h1>
+        <div className="mb-8">
+          <h2 className="text-3xl font-semibold text-gray-700 mb-3">
+            {is404 ? "Page Not Found" : "Something Went Wrong"}
+          </h2>
+          <p className="text-lg text-gray-600">{details}</p>
+        </div>
+        <a
+          href="/login"
+          className="inline-block bg-gray-800 text-white font-semibold px-8 py-3 rounded-lg hover:bg-gray-700 transition-colors duration-200"
+        >
+          Go Back Home
+        </a>
+        {stack && (
+          <pre className="mt-8 text-left w-full p-4 overflow-x-auto bg-gray-900 text-gray-100 rounded-lg">
+            <code>{stack}</code>
+          </pre>
+        )}
+      </div>
     </main>
   );
 }
