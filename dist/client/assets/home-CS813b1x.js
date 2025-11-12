@@ -1,0 +1,1 @@
+import{w as t}from"./chunk-UIGDSWPH-ChJgZbLH.js";function o({}){return[{title:"Redirecting..."},{name:"description",content:"Redirecting to login page"}]}const i=t(function(){return null});export{i as default,o as meta};
