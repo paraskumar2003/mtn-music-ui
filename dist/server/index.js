@@ -56,7 +56,7 @@ const entryServer = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineP
   default: handleRequest,
   streamTimeout
 }, Symbol.toStringTag, { value: "Module" }));
-const styles = "/assets/tailwind-Ci04w_VR.css";
+const styles = "/assets/tailwind-9dKDI2GL.css";
 const links = () => [{
   rel: "preconnect",
   href: "https://fonts.googleapis.com"
@@ -94,20 +94,35 @@ const root = UNSAFE_withComponentProps(function App() {
 const ErrorBoundary = UNSAFE_withErrorBoundaryProps(function ErrorBoundary2({
   error
 }) {
-  let message = "Oops!";
   let details = "An unexpected error occurred.";
   let stack;
   if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? "404" : "Error";
+    error.status === 404 ? "404" : "Error";
     details = error.status === 404 ? "The requested page could not be found." : error.statusText || details;
   }
-  return /* @__PURE__ */ jsxs("main", {
-    className: "pt-16 p-4 container mx-auto",
-    children: [/* @__PURE__ */ jsx("h1", {
-      children: message
-    }), /* @__PURE__ */ jsx("p", {
-      children: details
-    }), stack]
+  const is404 = isRouteErrorResponse(error) && error.status === 404;
+  return /* @__PURE__ */ jsx("main", {
+    className: "min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100",
+    children: /* @__PURE__ */ jsxs("div", {
+      className: "text-center px-4 max-w-2xl mx-auto",
+      children: [/* @__PURE__ */ jsx("h1", {
+        className: "text-9xl font-bold text-gray-800 mb-4",
+        children: is404 ? "404" : "Error"
+      }), /* @__PURE__ */ jsxs("div", {
+        className: "mb-8",
+        children: [/* @__PURE__ */ jsx("h2", {
+          className: "text-3xl font-semibold text-gray-700 mb-3",
+          children: is404 ? "Page Not Found" : "Something Went Wrong"
+        }), /* @__PURE__ */ jsx("p", {
+          className: "text-lg text-gray-600",
+          children: details
+        })]
+      }), /* @__PURE__ */ jsx("a", {
+        href: "/login",
+        className: "inline-block bg-gray-800 text-white font-semibold px-8 py-3 rounded-lg hover:bg-gray-700 transition-colors duration-200",
+        children: "Go Back Home"
+      }), stack]
+    })
   });
 });
 const route0 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
@@ -941,7 +956,7 @@ const route4 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   __proto__: null,
   default: quiz
 }, Symbol.toStringTag, { value: "Module" }));
-const serverManifest = { "entry": { "module": "/assets/entry.client-CS0t8mQ7.js", "imports": ["/assets/jsx-runtime-u17CrQMm.js", "/assets/chunk-UIGDSWPH-ChJgZbLH.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": true, "module": "/assets/root-DnNgl7jx.js", "imports": ["/assets/jsx-runtime-u17CrQMm.js", "/assets/chunk-UIGDSWPH-ChJgZbLH.js"], "css": ["/assets/root-CZlocQJr.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/home": { "id": "routes/home", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/home-CS813b1x.js", "imports": ["/assets/chunk-UIGDSWPH-ChJgZbLH.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/login": { "id": "routes/login", "parentId": "root", "path": "/login", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/login-DQqsejmV.js", "imports": ["/assets/chunk-UIGDSWPH-ChJgZbLH.js", "/assets/jsx-runtime-u17CrQMm.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/register": { "id": "routes/register", "parentId": "root", "path": "/register", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/register-BvTmyypm.js", "imports": ["/assets/chunk-UIGDSWPH-ChJgZbLH.js", "/assets/jsx-runtime-u17CrQMm.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/quiz": { "id": "routes/quiz", "parentId": "root", "path": "/quiz", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/quiz-C_zKjKkt.js", "imports": ["/assets/chunk-UIGDSWPH-ChJgZbLH.js", "/assets/jsx-runtime-u17CrQMm.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 } }, "url": "/assets/manifest-cb19802e.js", "version": "cb19802e", "sri": void 0 };
+const serverManifest = { "entry": { "module": "/assets/entry.client-CS0t8mQ7.js", "imports": ["/assets/jsx-runtime-u17CrQMm.js", "/assets/chunk-UIGDSWPH-ChJgZbLH.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": true, "module": "/assets/root-B5nSUJGx.js", "imports": ["/assets/jsx-runtime-u17CrQMm.js", "/assets/chunk-UIGDSWPH-ChJgZbLH.js"], "css": ["/assets/root-7B2m6vRt.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/home": { "id": "routes/home", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/home-CS813b1x.js", "imports": ["/assets/chunk-UIGDSWPH-ChJgZbLH.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/login": { "id": "routes/login", "parentId": "root", "path": "/login", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/login-DQqsejmV.js", "imports": ["/assets/chunk-UIGDSWPH-ChJgZbLH.js", "/assets/jsx-runtime-u17CrQMm.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/register": { "id": "routes/register", "parentId": "root", "path": "/register", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/register-BvTmyypm.js", "imports": ["/assets/chunk-UIGDSWPH-ChJgZbLH.js", "/assets/jsx-runtime-u17CrQMm.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/quiz": { "id": "routes/quiz", "parentId": "root", "path": "/quiz", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/quiz-C_zKjKkt.js", "imports": ["/assets/chunk-UIGDSWPH-ChJgZbLH.js", "/assets/jsx-runtime-u17CrQMm.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 } }, "url": "/assets/manifest-7f0bb9ac.js", "version": "7f0bb9ac", "sri": void 0 };
 const assetsBuildDirectory = "dist/client";
 const basename = "/";
 const future = { "v8_middleware": false, "unstable_optimizeDeps": false, "unstable_splitRouteModules": false, "unstable_subResourceIntegrity": false, "unstable_viteEnvironmentApi": false };
