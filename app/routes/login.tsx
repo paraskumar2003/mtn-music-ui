@@ -2,6 +2,7 @@ import type { Route } from "./+types/login";
 import { Form, useActionData, redirect } from "react-router";
 import * as yup from "yup";
 import { useState, useEffect } from "react";
+import { AuthServices } from "../services/auth/auth.service";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -15,9 +16,27 @@ export default function Login() {
     error?: string;
     step?: "email" | "otp";
     email?: string;
+    mobile?: string;
+    name?: string;
   }>();
 
   const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setSendOtpValues({ ...sendOtpValues, [name]: value });
+  };
+
+  const [sendOtpValues, setSendOtpValues] = useState<{
+    email: string;
+    name: string;
+    mobile: string;
+  }>({
+    email: "",
+    name: "",
+    mobile: "",
+  });
 
   const isOtpStep = actionData?.step === "otp";
 
@@ -38,6 +57,26 @@ export default function Login() {
         <Form method="post" className="space-y-6">
           {!isOtpStep ? (
             <>
+              {/* Name Input */}
+              <div>
+                <label
+                  className="block mb-2 text-sm font-medium text-gray-700"
+                  htmlFor="name"
+                >
+                  Full Name
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  required
+                  value={sendOtpValues.name}
+                  onChange={(e) => handleChange(e)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none text-black"
+                  placeholder="John Doe"
+                />
+              </div>
+
               {/* Email Input */}
               <div>
                 <label
@@ -51,10 +90,30 @@ export default function Login() {
                   name="email"
                   type="email"
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={sendOtpValues.email}
+                  onChange={(e) => handleChange(e)}
                   className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none text-black"
                   placeholder="you@example.com"
+                />
+              </div>
+
+              {/* Mobile Input */}
+              <div>
+                <label
+                  className="block mb-2 text-sm font-medium text-gray-700"
+                  htmlFor="mobile"
+                >
+                  Mobile Number
+                </label>
+                <input
+                  id="mobile"
+                  name="mobile"
+                  type="tel"
+                  required
+                  value={sendOtpValues.mobile}
+                  onChange={(e) => handleChange(e)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none text-black"
+                  placeholder="1234567890"
                 />
               </div>
               <button
@@ -68,6 +127,13 @@ export default function Login() {
             </>
           ) : (
             <>
+              <input
+                type="hidden"
+                className="hidden"
+                name="email"
+                value={actionData?.email || email}
+              />
+
               {/* OTP Info */}
               <p className="text-center text-gray-700 text-sm mb-4">
                 An OTP has been sent to <br />
@@ -89,6 +155,8 @@ export default function Login() {
                   name="otp"
                   type="text"
                   required
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
                   className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none text-black"
                   placeholder="Enter 6-digit OTP"
                 />
@@ -127,12 +195,22 @@ export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
   const actionType = formData.get("_action");
   const email = formData.get("email")?.toString();
+  const mobile = formData.get("mobile")?.toString();
+  const name = formData.get("name")?.toString();
 
-  const emailSchema = yup.object({
+  const sendOtpSchema = yup.object({
     email: yup
       .string()
       .email("Please enter a valid email address")
       .required("Email is required"),
+    mobile: yup
+      .string()
+      .matches(/^\d{10}$/, "Mobile number must be 10 digits")
+      .required("Mobile number is required"),
+    name: yup
+      .string()
+      .min(2, "Name must be at least 2 characters")
+      .required("Name is required"),
   });
 
   const otpSchema = yup.object({
@@ -144,15 +222,32 @@ export async function action({ request }: Route.ActionArgs) {
 
   if (actionType === "sendOtp") {
     try {
-      await emailSchema.validate({ email }, { abortEarly: false });
+      await sendOtpSchema.validate(
+        { email, mobile, name },
+        { abortEarly: false }
+      );
+
+      let result = await AuthServices.loginWeb({
+        email: email!,
+        mobile: mobile!,
+        name: name!,
+      });
+
+      if (result?.err) {
+        return { error: result.err, message: result.message, step: "email" };
+      }
+
+      if (result?.data?.data?.otp_sent) {
+        return { step: "otp", email };
+      } else {
+        return { error: "OTP not sent", step: "email" };
+      }
     } catch (err) {
       if (err instanceof yup.ValidationError) {
         return { error: err.errors[0], step: "email" };
       }
       return { error: "Unexpected error", step: "email" };
     }
-    console.log("OTP sent to:", email);
-    return { step: "otp", email };
   }
 
   if (actionType === "verifyOtp") {
@@ -169,7 +264,23 @@ export async function action({ request }: Route.ActionArgs) {
     if (otp === "111111") {
       throw redirect("/quiz");
     }
-    return { error: "Invalid OTP", step: "otp", email };
+
+    let result = await AuthServices.verifyOtp({
+      email: email!,
+      otp: otp!,
+    });
+
+    console.log("verifyOtp result", result);
+
+    if (result?.err) {
+      return { error: result.err, message: result.message, step: "otp", email };
+    }
+
+    if (result?.data?.data?.otp_verified) {
+      throw redirect("/quiz");
+    } else {
+      return { error: "Invalid OTP", step: "otp", email };
+    }
   }
 
   return null;
