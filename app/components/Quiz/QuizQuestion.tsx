@@ -37,10 +37,6 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({
   const [textAnswer, setTextAnswer] = useState("");
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
-  useEffect(() => {
-    console.log(selectedOption);
-  }, [selectedOption]);
-
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
     null
   );

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import QuizAgreementModal from "~/components/Modal/QuizAgreementModal";
 import QuizQuestion from "~/components/Quiz/QuizQuestion";
 
 const quizData = [
@@ -284,15 +285,21 @@ export default function QuizPage() {
     // window.location.href = "/";
   };
 
+  const [started, setStarted] = useState(false);
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6 bg-[url('/assets/background-image.jpg')]">
-      <QuizQuestion
-        question={quizData[index]}
-        questionNumber={index + 1}
-        totalQuestions={quizData.length}
-        onAnswer={handleAnswer}
-        onNext={handleNext}
-      />
+      {!started && <QuizAgreementModal onStart={() => setStarted(true)} />}
+
+      {started && (
+        <QuizQuestion
+          question={quizData[index]}
+          questionNumber={index + 1}
+          totalQuestions={quizData.length}
+          onAnswer={handleAnswer}
+          onNext={handleNext}
+        />
+      )}
 
       {showPopup && (
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
