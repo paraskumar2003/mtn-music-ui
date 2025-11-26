@@ -1,8 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../Button";
 
-const QuizAgreementModal = ({ onStart }: { onStart: () => void }) => {
+const QuizAgreementModal = ({
+  onStart,
+  loading,
+}: {
+  onStart: () => void;
+  loading: boolean;
+}) => {
   const [agree, setAgree] = useState(false);
+
+  const isDisabled = !agree || loading;
+
+  useEffect(() => {
+    console.log({ isDisabled, agree, loading });
+  }, [isDisabled, agree, loading]);
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -40,10 +52,10 @@ const QuizAgreementModal = ({ onStart }: { onStart: () => void }) => {
           variant="primary"
           size="lg"
           className="w-full mt-6"
-          disabled={!agree}
+          disabled={isDisabled}
           onClick={onStart}
         >
-          Start Quiz →
+          {loading ? "Starting..." : "Start Quiz →"}
         </Button>
       </div>
     </div>

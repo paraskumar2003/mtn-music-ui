@@ -3,10 +3,11 @@ import { Form, useActionData, redirect } from "react-router";
 import * as yup from "yup";
 import { useState, useEffect } from "react";
 import { AuthServices } from "../services/auth/auth.service";
+import Cookies from "js-cookie";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Login | MyApp" },
+    { title: "Login | MTN Profiling" },
     { name: "description", content: "Login using email and OTP" },
   ];
 }
@@ -270,13 +271,18 @@ export async function action({ request }: Route.ActionArgs) {
       otp: otp!,
     });
 
-    console.log("verifyOtp result", result);
-
     if (result?.err) {
       return { error: result.err, message: result.message, step: "otp", email };
     }
 
     if (result?.data?.data?.otp_verified) {
+      // save access token to cookies
+      Cookies.set("access_token", result?.data?.data?.access_token || "", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+      });
+
       throw redirect("/quiz");
     } else {
       return { error: "Invalid OTP", step: "otp", email };

@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
+import type { Route } from "./+types/quiz";
 import QuizAgreementModal from "~/components/Modal/QuizAgreementModal";
-import QuizQuestion from "~/components/Quiz/QuizQuestion";
+import QuizQuestion, { type Question } from "~/components/Quiz/QuizQuestion";
+import { QuizServices } from "~/services/quiz/quiz.service";
+
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "Quiz | MTN Profiling" },
+    { name: "description", content: "Take a quiz to test your music skills" },
+  ];
+}
 
 const quizData = [
   {
@@ -261,15 +270,14 @@ export default function QuizPage() {
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [showPopup, setShowPopup] = useState(false);
+  const [loadingQuiz, setLoadingQuiz] = useState(false);
+
+  const [questions, setQuestions] = useState<Question[]>([]);
 
   const handleAnswer = (option: any) => {
     const q = quizData[index];
     setAnswers((prev) => ({ ...prev, [q.question_id]: option }));
   };
-
-  useEffect(() => {
-    console.log({ index });
-  }, [index]);
 
   const handleNext = () => {
     if (index < quizData.length - 1) {
@@ -281,15 +289,30 @@ export default function QuizPage() {
 
   const handleClosePopup = () => {
     setShowPopup(false);
-    // Optionally reset the quiz or redirect
-    // window.location.href = "/";
   };
 
   const [started, setStarted] = useState(false);
 
+  const handleQuizStart = async () => {
+    setLoadingQuiz(true);
+    await handleQuizInitiate();
+    setLoadingQuiz(false);
+    setStarted(true);
+  };
+
+  const handleQuizInitiate = async () => {
+    const response = await QuizServices.initiateQuiz();
+    if (response?.err) {
+      return { error: response.err, message: response.message };
+    }
+    setQuestions((arr) => [...arr, response?.data?.data?.question || {}]);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6 bg-[url('/assets/background-image.jpg')]">
-      {!started && <QuizAgreementModal onStart={() => setStarted(true)} />}
+      {!started && (
+        <QuizAgreementModal onStart={handleQuizStart} loading={loadingQuiz} />
+      )}
 
       {started && (
         <QuizQuestion

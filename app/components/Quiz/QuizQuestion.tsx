@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Button from "../Button";
 
-interface Question {
+export interface Question {
   question_id: string;
   prompt_html: string;
   image_url?: string | null;
@@ -18,7 +18,7 @@ interface Question {
   }[];
 }
 
-interface QuizQuestionProps {
+export interface QuizQuestionProps {
   question: Question;
   questionNumber: number;
   totalQuestions: number;

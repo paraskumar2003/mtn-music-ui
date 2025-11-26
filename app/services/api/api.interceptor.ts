@@ -14,7 +14,7 @@ export const setGlobalLoadingHandler = (
 
 class ApiServices {
   private static instance = axios.create({
-    baseURL: process.env.API_URL,
+    baseURL: "http://localhost:4000/api",
     timeout: 10000,
     headers: {
       "Content-Type": "application/json",
