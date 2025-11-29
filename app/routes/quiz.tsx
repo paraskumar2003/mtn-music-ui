@@ -3,6 +3,7 @@ import type { Route } from "./+types/quiz";
 import QuizAgreementModal from "~/components/Modal/QuizAgreementModal";
 import QuizQuestion, { type Question } from "~/components/Quiz/QuizQuestion";
 import { QuizServices } from "~/services/quiz/quiz.service";
+import Cookies from "js-cookie";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -305,6 +306,7 @@ export default function QuizPage() {
     if (response?.err) {
       return { error: response.err, message: response.message };
     }
+    console.log(response?.data?.data?.question);
     setQuestions((arr) => [...arr, response?.data?.data?.question || {}]);
   };
 
@@ -316,9 +318,9 @@ export default function QuizPage() {
 
       {started && (
         <QuizQuestion
-          question={quizData[index]}
+          question={questions[index]}
           questionNumber={index + 1}
-          totalQuestions={quizData.length}
+          totalQuestions={questions.length}
           onAnswer={handleAnswer}
           onNext={handleNext}
         />

@@ -4,6 +4,7 @@ import * as yup from "yup";
 import { useState, useEffect } from "react";
 import { AuthServices } from "../services/auth/auth.service";
 import Cookies from "js-cookie";
+import { accessTokenCookie } from "~/cookies/server";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -275,15 +276,16 @@ export async function action({ request }: Route.ActionArgs) {
       return { error: result.err, message: result.message, step: "otp", email };
     }
 
-    if (result?.data?.data?.otp_verified) {
-      // save access token to cookies
-      Cookies.set("access_token", result?.data?.data?.access_token || "", {
-        httpOnly: true,
-        secure: true,
-        sameSite: "strict",
-      });
+    console.log({ result, accessToken: result?.data?.data?.access_token });
 
-      throw redirect("/quiz");
+    if (result?.data?.data?.otp_verified) {
+      return redirect("/quiz", {
+        headers: {
+          "Set-Cookie": await accessTokenCookie.serialize(
+            result?.data?.data?.access_token
+          ),
+        },
+      });
     } else {
       return { error: "Invalid OTP", step: "otp", email };
     }

@@ -34,7 +34,9 @@ class ApiServices {
 
         if (typeof window !== "undefined") {
           // Client-side: get from cookies
-          token = Cookies.get("authToken");
+          token = atob(Cookies.get("accessToken") || "")
+            .trim()
+            .replaceAll('"', "");
         } else {
           // Server-side: get from request headers if available
           token = config.headers?.["Authorization"]
@@ -91,7 +93,7 @@ class ApiServices {
           console.error("Unauthorized! Redirecting to login...");
           // Remove token from cookies and redirect to login
           if (typeof window !== "undefined") {
-            Cookies.remove("authToken");
+            // Cookies.remove("accessToken");
             window.location.href = "/login";
           }
         } else {
