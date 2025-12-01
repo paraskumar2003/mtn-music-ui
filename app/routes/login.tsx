@@ -20,6 +20,7 @@ export default function Login() {
     email?: string;
     mobile?: string;
     name?: string;
+    message?: string;
   }>();
 
   const [email, setEmail] = useState("");
@@ -175,7 +176,9 @@ export default function Login() {
           )}
 
           {actionData?.error && (
-            <p className="text-red-600 text-center mt-4">{actionData.error}</p>
+            <p className="text-red-600 text-center mt-4">
+              {actionData.message || actionData.error}
+            </p>
           )}
         </Form>
 

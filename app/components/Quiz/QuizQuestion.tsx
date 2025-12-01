@@ -1,5 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import Button from "../Button";
+import { QuizServices } from "~/services/quiz/quiz.service";
+import CameraCapture from "../Camera/CaptureImage";
 
 export interface Question {
   question_id: string;
@@ -22,7 +24,7 @@ export interface QuizQuestionProps {
   question: Question;
   questionNumber: number;
   totalQuestions: number;
-  onAnswer: (selected: string | Blob) => void;
+  onAnswer: (selected: string) => void;
   onNext: () => void;
 }
 
@@ -35,6 +37,8 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({
 }) => {
   const [answered, setAnswered] = useState(false);
   const [textAnswer, setTextAnswer] = useState("");
+  const [uploading, setUploading] = useState(false);
+
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
@@ -70,13 +74,24 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({
       const chunks: BlobPart[] = [];
 
       recorder.ondataavailable = (e) => chunks.push(e.data);
-      recorder.onstop = () => {
+      recorder.onstop = async () => {
         const blob = new Blob(chunks, {
           type:
             question.question_type === "audio" ? "audio/webm" : "video/webm",
         });
         setMediaBlob(blob);
-        onAnswer(blob);
+
+        const formData = new FormData();
+        formData.append("file", blob, `${question.question_id}.webm`);
+
+        // Upload to S3
+        const uploadRes = await QuizServices.uploadToS3(blob);
+        if (uploadRes.err) {
+          console.error("Error uploading to S3:", uploadRes.err);
+          return;
+        }
+
+        onAnswer(uploadRes.data);
 
         if (question.question_type === "audio" && audioRef.current) {
           audioRef.current.src = URL.createObjectURL(blob);
@@ -228,48 +243,29 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({
 
             {/* 📸 IMAGE CAPTURE / UPLOAD */}
             {question.question_type === "image" && (
-              <div className="flex flex-col items-center gap-4">
-                {!answered && (
-                  <>
-                    <input
-                      id="cameraInput"
-                      type="file"
-                      accept="image/*"
-                      capture="environment" // forces mobile camera use
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          onAnswer(file);
-                          setMediaBlob(file);
-                        }
-                      }}
-                    />
+              <CameraCapture
+                onAnswer={async (blob: Blob) => {
+                  setUploading(true);
 
-                    <Button
-                      variant="primary"
-                      size="lg"
-                      onClick={() => {
-                        const input = document.getElementById(
-                          "cameraInput"
-                        ) as HTMLInputElement;
-                        input?.click(); // manually trigger file input
-                      }}
-                    >
-                      📸 Capture / Upload Image
-                    </Button>
-                  </>
-                )}
+                  try {
+                    const uploadRes = await QuizServices.uploadToS3(blob);
 
-                {/* Preview */}
-                {mediaBlob && (
-                  <img
-                    src={URL.createObjectURL(mediaBlob)}
-                    alt="Captured"
-                    className="mt-4 rounded-lg border border-gray-200 max-h-64 object-contain"
-                  />
-                )}
-              </div>
+                    if (uploadRes.err) {
+                      console.error("Error uploading to S3:", uploadRes.err);
+                      setUploading(false);
+                      return;
+                    }
+
+                    const s3Url = uploadRes.data;
+
+                    // Pass URL to Quiz Logic
+                    onAnswer(s3Url);
+                    setMediaBlob(blob); // optional – for preview
+                  } finally {
+                    setUploading(false);
+                  }
+                }}
+              />
             )}
           </div>
         )}
@@ -278,9 +274,20 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({
       {/* Next Button */}
       {!answered && question.question_type !== "text" && (
         <div className="text-center mt-6">
-          <Button variant="primary" size="lg" onClick={onNext}>
+          <Button
+            variant="primary"
+            size="lg"
+            disabled={uploading}
+            onClick={onNext}
+          >
             Next Question →
           </Button>
+        </div>
+      )}
+
+      {uploading && (
+        <div className="text-center text-blue-400 font-medium mb-4 animate-pulse">
+          Uploading image… please wait
         </div>
       )}
     </div>

@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { Route } from "./+types/quiz";
 import QuizAgreementModal from "~/components/Modal/QuizAgreementModal";
 import QuizQuestion, { type Question } from "~/components/Quiz/QuizQuestion";
 import { QuizServices } from "~/services/quiz/quiz.service";
-import Cookies from "js-cookie";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -272,6 +271,7 @@ export default function QuizPage() {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [showPopup, setShowPopup] = useState(false);
   const [loadingQuiz, setLoadingQuiz] = useState(false);
+  const [quizId, setQuizId] = useState("");
 
   const [questions, setQuestions] = useState<Question[]>([]);
 
@@ -307,7 +307,31 @@ export default function QuizPage() {
       return { error: response.err, message: response.message };
     }
     console.log(response?.data?.data?.question);
+    setQuizId(response?.data?.data?.quiz_id || "");
     setQuestions((arr) => [...arr, response?.data?.data?.question || {}]);
+  };
+
+  const handleNextQuestion = async (nextQuestion: Question) => {
+    if (!nextQuestion) return;
+    setQuestions((arr) => [...arr, nextQuestion || {}]);
+    setIndex((prev) => prev + 1);
+  };
+
+  const handleAnswerSubmit = async (answer: string) => {
+    /**
+     * answer will always be a string, in case of any media it is expected to be s3 url.
+     */
+    const response = await QuizServices.answerQuiz({
+      quiz_id: quizId,
+      question_id: questions[index].question_id,
+      answer,
+    });
+
+    if (response?.err) {
+      return { error: response.err, message: response.message };
+    }
+
+    handleNextQuestion(response.data.data.nextQuestion);
   };
 
   return (
@@ -321,7 +345,7 @@ export default function QuizPage() {
           question={questions[index]}
           questionNumber={index + 1}
           totalQuestions={questions.length}
-          onAnswer={handleAnswer}
+          onAnswer={handleAnswerSubmit}
           onNext={handleNext}
         />
       )}

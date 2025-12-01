@@ -16,9 +16,7 @@ class ApiServices {
   private static instance = axios.create({
     baseURL: "http://localhost:4000/api",
     timeout: 10000,
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: {},
   });
 
   // Interceptor for requests
@@ -78,7 +76,6 @@ class ApiServices {
         console.log({
           url: response.config.url,
           response: response.data,
-          payload: response.config.data,
           headers: response.config.headers,
         });
         console.log("------------ Axios Response End ------------");
