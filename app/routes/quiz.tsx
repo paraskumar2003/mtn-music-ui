@@ -3,6 +3,7 @@ import type { Route } from "./+types/quiz";
 import QuizAgreementModal from "~/components/Modal/QuizAgreementModal";
 import QuizQuestion, { type Question } from "~/components/Quiz/QuizQuestion";
 import { QuizServices } from "~/services/quiz/quiz.service";
+import { useNavigate } from "react-router";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -275,6 +276,8 @@ export default function QuizPage() {
 
   const [questions, setQuestions] = useState<Question[]>([]);
 
+  const navigate = useNavigate();
+
   const handleAnswer = (option: any) => {
     const q = quizData[index];
     setAnswers((prev) => ({ ...prev, [q.question_id]: option }));
@@ -329,6 +332,12 @@ export default function QuizPage() {
 
     if (response?.err) {
       return { error: response.err, message: response.message };
+    }
+
+    if (response.data.data.is_last_question) {
+      /** send to /score page with quizId */
+      navigate(`/score/${quizId}`);
+      return;
     }
 
     handleNextQuestion(response.data.data.nextQuestion);
