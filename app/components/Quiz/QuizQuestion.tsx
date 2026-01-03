@@ -120,14 +120,14 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({
   return (
     <div className="max-w-2xl mx-auto bg-[#04061C] rounded-2xl shadow-xl border border-gray-100 p-10">
       <div className="flex justify-between mb-6 text-sm text-white-500">
-        <span>Question {questionNumber}</span>
-        <span className="capitalize">
+        <span className="text-white">Question {questionNumber}</span>
+        <span className="capitalize text-white">
           {question.dimension} • {question.level}
         </span>
       </div>
 
       <h2
-        className="text-xl font-semibold text-white-900 mb-6"
+        className="text-xl font-semibold text-white mb-6"
         dangerouslySetInnerHTML={{ __html: question.prompt_html }}
       />
 
