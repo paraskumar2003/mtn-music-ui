@@ -51,7 +51,7 @@ const QuizAgreementModal = ({
         <Button
           variant="primary"
           size="lg"
-          className="w-full mt-6"
+          className="w-full mt-6 cursor-pointer"
           disabled={isDisabled}
           onClick={onStart}
         >

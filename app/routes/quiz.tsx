@@ -275,8 +275,9 @@ export default function QuizPage() {
   const [quizId, setQuizId] = useState("");
 
   const [questions, setQuestions] = useState<Question[]>([]);
-
+  const [remainingQuestions, setRemainingQuestions] = useState<number>(0);
   const navigate = useNavigate();
+  const [totalQuestions, setTotalQuestions] = useState<number>(0);
 
   const handleAnswer = (option: any) => {
     const q = quizData[index];
@@ -312,12 +313,19 @@ export default function QuizPage() {
     console.log(response?.data?.data?.question);
     setQuizId(response?.data?.data?.quiz_id || "");
     setQuestions((arr) => [...arr, response?.data?.data?.question || {}]);
+    setRemainingQuestions(1);
   };
 
-  const handleNextQuestion = async (nextQuestion: Question) => {
+  const handleNextQuestion = async (
+    nextQuestion: Question,
+    responseData: any
+  ) => {
     if (!nextQuestion) return;
     setQuestions((arr) => [...arr, nextQuestion || {}]);
     setIndex((prev) => prev + 1);
+    if (responseData?.remaining_questions !== undefined) {
+      setRemainingQuestions(responseData.remaining_questions);
+    }
   };
 
   const handleAnswerSubmit = async (answer: string) => {
@@ -339,8 +347,14 @@ export default function QuizPage() {
       navigate(`/score/${quizId}`);
       return;
     }
+    const newRemainingQuestions = response.data.data.remaining_questions || 0;
 
-    handleNextQuestion(response.data.data.nextQuestion);
+    // अगर current question पहला है, तो remainingQuestions set करें
+    if (index === 0) {
+      setRemainingQuestions(newRemainingQuestions);
+    }
+
+    handleNextQuestion(response.data.data.nextQuestion, response.data.data);
   };
 
   return (
@@ -354,6 +368,8 @@ export default function QuizPage() {
           question={questions[index]}
           questionNumber={index + 1}
           totalQuestions={questions.length}
+          remainingQuestions={remainingQuestions}
+          isFirstQuestion={index === 0}
           onAnswer={handleAnswerSubmit}
           onNext={handleNext}
         />

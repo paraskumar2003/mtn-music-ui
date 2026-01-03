@@ -3,6 +3,7 @@ import Button from "../Button";
 
 export default function CameraCapture({
   onAnswer,
+  
 }: {
   onAnswer: (url: Blob) => void;
 }) {

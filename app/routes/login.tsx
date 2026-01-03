@@ -168,7 +168,7 @@ export default function Login() {
                 type="submit"
                 name="_action"
                 value="verifyOtp"
-                className="w-full py-3 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold rounded-lg shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 border border-transparent"
+                className="w-full py-3 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold rounded-lg shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 border border-transparent cursor-pointer"
               >
                 Verify & Continue
               </button>
