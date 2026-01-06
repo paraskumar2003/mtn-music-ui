@@ -30,10 +30,10 @@ const QuizAgreementModal = ({
           </p>
 
           <ul className="list-disc pl-5 space-y-1">
-            <li>20–30 questions</li>
-            <li>Some tasks require microphone or camera</li>
-            <li>A stable internet connection is necessary</li>
-            <li>Your audio/video may be recorded for evaluation</li>
+            <li>The assessment includes 20–30 image-based questions</li>
+            <li>Responses will be collected through user input only</li>
+            <li>No audio or video permissions are required</li>
+            <li>A stable internet connection is recommended</li>
           </ul>
 
           <p className="font-medium">Please confirm your participation:</p>
