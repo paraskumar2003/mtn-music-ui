@@ -121,7 +121,7 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({
 
   // Handle text area change - ONLY allow during timer
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (timerActive) {
+    if (!answered) {
       setTextAnswer(e.target.value);
     }
   };
@@ -375,19 +375,19 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({
                 rows={4}
                 placeholder={
                   timerActive
-                    ? `Type your answer here...`
-                    : "⏰ Time's up! You can no longer type. Submit your answer."
+                    ? "Type your answer here..."
+                    : "⏰ Time's up! You can still type. Click submit when ready."
                 }
                 className={`w-full rounded-lg md:rounded-xl p-3 md:p-4 text-base md:text-lg font-medium border-2 transition-all duration-300 resize-none
                   ${
                     timerActive
-                      ? "bg-gray-800/30 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:bg-gray-800/50"
-                      : "bg-gray-800/20 border-gray-700 text-gray-400 placeholder-gray-500 cursor-not-allowed"
+                      ? "bg-gray-800/30 border-gray-600 text-white"
+                      : "bg-gray-800/30 border-red-500 text-white"
                   }`}
                 value={textAnswer}
                 onChange={handleTextChange}
-                readOnly={!timerActive || answered}
-                disabled={!timerActive || answered}
+                readOnly={answered}
+                disabled={answered}
               />
             </div>
 
