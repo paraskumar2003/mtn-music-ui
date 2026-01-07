@@ -14,8 +14,8 @@ export const setGlobalLoadingHandler = (
 
 class ApiServices {
   private static instance = axios.create({
-    // baseURL: "http://localhost:4000/api",
-    baseURL: "http://65.1.91.197:3000/api",
+    baseURL: "http://localhost:4000/api",
+    // baseURL: "http://65.1.91.197:3000/api",
     timeout: 10000,
     headers: {},
   });
