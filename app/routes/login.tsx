@@ -266,10 +266,6 @@ export async function action({ request }: Route.ActionArgs) {
       return { error: "Unexpected error", step: "otp", email };
     }
 
-    if (otp === "111111") {
-      throw redirect("/quiz");
-    }
-
     let result = await AuthServices.verifyOtp({
       email: email!,
       otp: otp!,
