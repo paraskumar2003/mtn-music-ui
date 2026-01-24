@@ -3,7 +3,6 @@ import { Form, useActionData, redirect } from "react-router";
 import * as yup from "yup";
 import { useState, useEffect } from "react";
 import { AuthServices } from "../services/auth/auth.service";
-import Cookies from "js-cookie";
 import { accessTokenCookie } from "~/cookies/server";
 
 export function meta({}: Route.MetaArgs) {
@@ -18,28 +17,44 @@ export default function Login() {
     error?: string;
     step?: "email" | "otp";
     email?: string;
-    mobile?: string;
-    name?: string;
     message?: string;
   }>();
 
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setSendOtpValues({ ...sendOtpValues, [name]: value });
-  };
-
-  const [sendOtpValues, setSendOtpValues] = useState<{
-    email: string;
+  const [formValues, setFormValues] = useState<{
     name: string;
+    dateOfBirth: string;
+    gender: string;
+    educationLevel: string;
+    currentRole: string;
+    organization: string;
+    assessmentPurpose: string;
+    email: string;
     mobile: string;
+    workExperience: string;
+    priorTests: string;
   }>({
-    email: "",
     name: "",
+    dateOfBirth: "",
+    gender: "",
+    educationLevel: "",
+    currentRole: "",
+    organization: "",
+    assessmentPurpose: "",
+    email: "",
     mobile: "",
+    workExperience: "",
+    priorTests: "",
   });
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    const { name, value } = e.target;
+    setFormValues({ ...formValues, [name]: value });
+  };
 
   const isOtpStep = actionData?.step === "otp";
 
@@ -50,75 +65,286 @@ export default function Login() {
     }
   }, [isOtpStep, actionData]);
 
+  // Education level options
+  const educationOptions = [
+    "High School",
+    "Associate Degree",
+    "Bachelor's Degree",
+    "Master's Degree",
+    "Doctorate",
+    "Diploma/Certificate",
+    "Other",
+  ];
+
+  // Assessment purpose options
+  const purposeOptions = [
+    "Hiring / Role Alignment",
+    "Career Direction",
+    "Academic / School",
+    "Personal Understanding",
+  ];
+
+  // Gender options
+  const genderOptions = ["Male", "Female", "Non-binary", "Prefer not to say"];
+
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="bg-white shadow-2xl rounded-2xl p-10 w-full max-w-md border border-gray-100">
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 py-8">
+      <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-2xl border border-gray-100 max-h-[80vh] overflow-y-auto scrollbar-hide">
         <h1 className="text-3xl font-semibold text-center mb-8 text-gray-800">
-          Sign In with OTP 🔐
+          Sign Up & Verify Your Identity
         </h1>
 
         <Form method="post" className="space-y-6">
           {!isOtpStep ? (
             <>
-              {/* Name Input */}
+              {/* Full Name */}
               <div>
                 <label
                   className="block mb-2 text-sm font-medium text-gray-700"
                   htmlFor="name"
                 >
-                  Full Name
+                  Full Name *
                 </label>
                 <input
                   id="name"
                   name="name"
                   type="text"
                   required
-                  value={sendOtpValues.name}
-                  onChange={(e) => handleChange(e)}
+                  value={formValues.name}
+                  onChange={handleChange}
                   className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none text-black"
                   placeholder="John Doe"
                 />
               </div>
 
-              {/* Email Input */}
+              {/* Date of Birth / Age */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label
+                    className="block mb-2 text-sm font-medium text-gray-700"
+                    htmlFor="dateOfBirth"
+                  >
+                    Date of Birth *
+                  </label>
+                  <input
+                    id="dateOfBirth"
+                    name="dateOfBirth"
+                    type="date"
+                    required
+                    value={formValues.dateOfBirth}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none text-black"
+                  />
+                </div>
+
+                {/* Gender */}
+                <div>
+                  <label
+                    className="block mb-2 text-sm font-medium text-gray-700"
+                    htmlFor="gender"
+                  >
+                    Gender *
+                  </label>
+                  <select
+                    id="gender"
+                    name="gender"
+                    required
+                    value={formValues.gender}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none text-black"
+                  >
+                    <option value="">Select Gender</option>
+                    {genderOptions.map((gender) => (
+                      <option key={gender} value={gender}>
+                        {gender}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Education Level */}
               <div>
                 <label
                   className="block mb-2 text-sm font-medium text-gray-700"
-                  htmlFor="email"
+                  htmlFor="educationLevel"
                 >
-                  Email Address
+                  Highest Education Level *
+                </label>
+                <select
+                  id="educationLevel"
+                  name="educationLevel"
+                  required
+                  value={formValues.educationLevel}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none text-black"
+                >
+                  <option value="">Select Education Level</option>
+                  {educationOptions.map((level) => (
+                    <option key={level} value={level}>
+                      {level}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Current Role / Area of Study */}
+              <div>
+                <label
+                  className="block mb-2 text-sm font-medium text-gray-700"
+                  htmlFor="currentRole"
+                >
+                  Current Role / Area of Study *
                 </label>
                 <input
-                  id="email"
-                  name="email"
-                  type="email"
+                  id="currentRole"
+                  name="currentRole"
+                  type="text"
                   required
-                  value={sendOtpValues.email}
-                  onChange={(e) => handleChange(e)}
+                  value={formValues.currentRole}
+                  onChange={handleChange}
                   className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none text-black"
-                  placeholder="you@example.com"
+                  placeholder="e.g., Software Engineer, Student, Marketing Manager"
                 />
               </div>
 
-              {/* Mobile Input */}
+              {/* Organization / Institution */}
               <div>
                 <label
                   className="block mb-2 text-sm font-medium text-gray-700"
-                  htmlFor="mobile"
+                  htmlFor="organization"
                 >
-                  Mobile Number
+                  Organisation / Institution (if applicable)
                 </label>
                 <input
-                  id="mobile"
-                  name="mobile"
-                  type="tel"
-                  required
-                  value={sendOtpValues.mobile}
-                  onChange={(e) => handleChange(e)}
+                  id="organization"
+                  name="organization"
+                  type="text"
+                  value={formValues.organization}
+                  onChange={handleChange}
                   className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none text-black"
-                  placeholder="1234567890"
+                  placeholder="e.g., Google, Harvard University"
                 />
               </div>
+
+              {/* Purpose of Assessment */}
+              <div>
+                <label
+                  className="block mb-2 text-sm font-medium text-gray-700"
+                  htmlFor="assessmentPurpose"
+                >
+                  Purpose of Assessment *
+                </label>
+                <select
+                  id="assessmentPurpose"
+                  name="assessmentPurpose"
+                  required
+                  value={formValues.assessmentPurpose}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none text-black"
+                >
+                  <option value="">Select Purpose</option>
+                  {purposeOptions.map((purpose) => (
+                    <option key={purpose} value={purpose}>
+                      {purpose}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                {/* Email */}
+                <div>
+                  <label
+                    className="block mb-2 text-sm font-medium text-gray-700"
+                    htmlFor="email"
+                  >
+                    Email ID *
+                  </label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    value={formValues.email}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none text-black"
+                    placeholder="you@example.com"
+                  />
+                </div>
+
+                {/* Phone Number (Optional) */}
+                <div>
+                  <label
+                    className="block mb-2 text-sm font-medium text-gray-700"
+                    htmlFor="mobile"
+                  >
+                    Phone Number (Optional)
+                  </label>
+                  <input
+                    id="mobile"
+                    name="mobile"
+                    type="tel"
+                    value={formValues.mobile}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none text-black"
+                    placeholder="1234567890"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Years of Work Experience */}
+                <div className="space-y-2">
+                  <label
+                    className="block text-sm font-medium text-gray-700 leading-tight"
+                    htmlFor="workExperience"
+                  >
+                    Years of Work Experience
+                    <span className="text-gray-500 font-normal">
+                      {" "}
+                      (if applicable)
+                    </span>
+                  </label>
+                  <select
+                    id="workExperience"
+                    name="workExperience"
+                    value={formValues.workExperience}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none text-black"
+                  >
+                    <option value="">Select Experience</option>
+                    <option value="0">0 (Fresher)</option>
+                    <option value="1-3">1-3 years</option>
+                    <option value="4-7">4-7 years</option>
+                    <option value="8-12">8-12 years</option>
+                    <option value="13+">13+ years</option>
+                  </select>
+                </div>
+
+                {/* Prior Tests */}
+                <div className="space-y-2">
+                  <label
+                    className="block text-sm font-medium text-gray-700 leading-tight"
+                    htmlFor="priorTests"
+                  >
+                    Prior psychometric/aptitude tests taken? *
+                  </label>
+                  <select
+                    id="priorTests"
+                    name="priorTests"
+                    required
+                    value={formValues.priorTests}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none text-black"
+                  >
+                    <option value="">Select</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </div>
+              </div>
+
               <button
                 type="submit"
                 name="_action"
@@ -137,6 +363,46 @@ export default function Login() {
                 value={actionData?.email || email}
               />
 
+              {/* Include all form data as hidden inputs */}
+              <input type="hidden" name="name" value={formValues.name} />
+              <input
+                type="hidden"
+                name="dateOfBirth"
+                value={formValues.dateOfBirth}
+              />
+              <input type="hidden" name="gender" value={formValues.gender} />
+              <input
+                type="hidden"
+                name="educationLevel"
+                value={formValues.educationLevel}
+              />
+              <input
+                type="hidden"
+                name="currentRole"
+                value={formValues.currentRole}
+              />
+              <input
+                type="hidden"
+                name="organization"
+                value={formValues.organization}
+              />
+              <input
+                type="hidden"
+                name="assessmentPurpose"
+                value={formValues.assessmentPurpose}
+              />
+              <input type="hidden" name="mobile" value={formValues.mobile} />
+              <input
+                type="hidden"
+                name="workExperience"
+                value={formValues.workExperience}
+              />
+              <input
+                type="hidden"
+                name="priorTests"
+                value={formValues.priorTests}
+              />
+
               {/* OTP Info */}
               <p className="text-center text-gray-700 text-sm mb-4">
                 An OTP has been sent to <br />
@@ -151,7 +417,7 @@ export default function Login() {
                   className="block mb-2 text-sm font-medium text-gray-700"
                   htmlFor="otp"
                 >
-                  Enter OTP
+                  Enter OTP *
                 </label>
                 <input
                   id="otp"
@@ -162,6 +428,7 @@ export default function Login() {
                   onChange={(e) => setOtp(e.target.value)}
                   className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none text-black"
                   placeholder="Enter 6-digit OTP"
+                  maxLength={6}
                 />
               </div>
               <button
@@ -183,7 +450,7 @@ export default function Login() {
         </Form>
 
         <p className="mt-8 text-center text-sm text-gray-600">
-          Don’t have an account?{" "}
+          Don't have an account?{" "}
           <a
             href="/register"
             className="text-blue-600 hover:text-blue-800 font-medium"
@@ -199,23 +466,91 @@ export default function Login() {
 export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
   const actionType = formData.get("_action");
-  const email = formData.get("email")?.toString();
-  const mobile = formData.get("mobile")?.toString();
-  const name = formData.get("name")?.toString();
 
+  // Yup validation schemas
   const sendOtpSchema = yup.object({
+    name: yup
+      .string()
+      .min(2, "Name must be at least 2 characters")
+      .required("Full Name is required"),
+    dateOfBirth: yup
+      .string()
+      .required("Date of Birth is required")
+      .test("is-adult", "You must be at least 18 years old", (value) => {
+        if (!value) return false;
+        const birthDate = new Date(value);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (
+          monthDiff < 0 ||
+          (monthDiff === 0 && today.getDate() < birthDate.getDate())
+        ) {
+          age--;
+        }
+        return age >= 18;
+      }),
+    gender: yup
+      .string()
+      .required("Gender is required")
+      .oneOf(
+        ["Male", "Female", "Non-binary", "Prefer not to say"],
+        "Please select a valid gender",
+      ),
+    educationLevel: yup
+      .string()
+      .required("Education Level is required")
+      .oneOf(
+        [
+          "High School",
+          "Associate Degree",
+          "Bachelor's Degree",
+          "Master's Degree",
+          "Doctorate",
+          "Diploma/Certificate",
+          "Other",
+        ],
+        "Please select a valid education level",
+      ),
+    currentRole: yup
+      .string()
+      .min(2, "Current Role must be at least 2 characters")
+      .required("Current Role is required"),
+    organization: yup.string().optional(),
+    assessmentPurpose: yup
+      .string()
+      .required("Purpose of Assessment is required")
+      .oneOf(
+        [
+          "Hiring / Role Alignment",
+          "Career Direction",
+          "Academic / School",
+          "Personal Understanding",
+        ],
+        "Please select a valid purpose",
+      ),
     email: yup
       .string()
       .email("Please enter a valid email address")
       .required("Email is required"),
     mobile: yup
       .string()
-      .matches(/^\d{10}$/, "Mobile number must be 10 digits")
-      .required("Mobile number is required"),
-    name: yup
+      .optional()
+      .test("mobile-format", "Mobile number must be 10 digits", (value) => {
+        if (!value) return true; // optional
+        return /^\d{10}$/.test(value);
+      }),
+    workExperience: yup
       .string()
-      .min(2, "Name must be at least 2 characters")
-      .required("Name is required"),
+      .optional()
+      .oneOf(
+        ["", "0", "1-3", "4-7", "8-12", "13+"],
+        "Please select a valid experience range",
+      ),
+    priorTests: yup
+      .string()
+      .required("Prior tests information is required")
+      .oneOf(["yes", "no"], "Please select Yes or No"),
   });
 
   const otpSchema = yup.object({
@@ -227,15 +562,36 @@ export async function action({ request }: Route.ActionArgs) {
 
   if (actionType === "sendOtp") {
     try {
-      await sendOtpSchema.validate(
-        { email, mobile, name },
-        { abortEarly: false }
-      );
+      const formValues = {
+        name: formData.get("name")?.toString() || "",
+        dateOfBirth: formData.get("dateOfBirth")?.toString() || "",
+        gender: formData.get("gender")?.toString() || "",
+        educationLevel: formData.get("educationLevel")?.toString() || "",
+        currentRole: formData.get("currentRole")?.toString() || "",
+        organization: formData.get("organization")?.toString() || "",
+        assessmentPurpose: formData.get("assessmentPurpose")?.toString() || "",
+        email: formData.get("email")?.toString() || "",
+        mobile: formData.get("mobile")?.toString() || "",
+        workExperience: formData.get("workExperience")?.toString() || "",
+        priorTests: formData.get("priorTests")?.toString() || "",
+      };
 
+      // Validate all fields
+      await sendOtpSchema.validate(formValues, { abortEarly: false });
+
+      // Call login service with all data
       let result = await AuthServices.loginWeb({
-        email: email!,
-        mobile: mobile!,
-        name: name!,
+        email: formValues.email,
+        mobile: formValues.mobile || "", // optional
+        name: formValues.name,
+        dateOfBirth: formValues.dateOfBirth,
+        gender: formValues.gender,
+        educationLevel: formValues.educationLevel,
+        currentRole: formValues.currentRole,
+        organization: formValues.organization,
+        assessmentPurpose: formValues.assessmentPurpose,
+        workExperience: formValues.workExperience,
+        priorTests: formValues.priorTests === "yes",
       });
 
       if (result?.err) {
@@ -243,7 +599,7 @@ export async function action({ request }: Route.ActionArgs) {
       }
 
       if (result?.data?.data?.otp_sent) {
-        return { step: "otp", email };
+        return { step: "otp", email: formValues.email };
       } else {
         return { error: "OTP not sent", step: "email" };
       }
@@ -257,36 +613,62 @@ export async function action({ request }: Route.ActionArgs) {
 
   if (actionType === "verifyOtp") {
     const otp = formData.get("otp")?.toString();
+    const email = formData.get("email")?.toString();
+
     try {
+      // Validate OTP
       await otpSchema.validate({ otp }, { abortEarly: false });
+
+      if (!email) {
+        return { error: "Email is required", step: "otp", email: "" };
+      }
+
+      // Get all form data for verification
+      const userData = {
+        name: formData.get("name")?.toString() || "",
+        dateOfBirth: formData.get("dateOfBirth")?.toString() || "",
+        gender: formData.get("gender")?.toString() || "",
+        educationLevel: formData.get("educationLevel")?.toString() || "",
+        currentRole: formData.get("currentRole")?.toString() || "",
+        organization: formData.get("organization")?.toString() || "",
+        assessmentPurpose: formData.get("assessmentPurpose")?.toString() || "",
+        mobile: formData.get("mobile")?.toString() || "",
+        workExperience: formData.get("workExperience")?.toString() || "",
+        priorTests: formData.get("priorTests")?.toString() || "",
+      };
+
+      // Call verify OTP service with all data
+      let result = await AuthServices.verifyOtp({
+        email: email!,
+        otp: otp!,
+        userData: userData, // Send all user data to backend
+      });
+
+      if (result?.err) {
+        return {
+          error: result.err,
+          message: result.message,
+          step: "otp",
+          email,
+        };
+      }
+
+      if (result?.data?.data?.otp_verified) {
+        return redirect("/quiz", {
+          headers: {
+            "Set-Cookie": await accessTokenCookie.serialize(
+              result?.data?.data?.access_token,
+            ),
+          },
+        });
+      } else {
+        return { error: "Invalid OTP", step: "otp", email };
+      }
     } catch (err) {
       if (err instanceof yup.ValidationError) {
         return { error: err.errors[0], step: "otp", email };
       }
       return { error: "Unexpected error", step: "otp", email };
-    }
-
-    let result = await AuthServices.verifyOtp({
-      email: email!,
-      otp: otp!,
-    });
-
-    if (result?.err) {
-      return { error: result.err, message: result.message, step: "otp", email };
-    }
-
-    console.log({ result, accessToken: result?.data?.data?.access_token });
-
-    if (result?.data?.data?.otp_verified) {
-      return redirect("/quiz", {
-        headers: {
-          "Set-Cookie": await accessTokenCookie.serialize(
-            result?.data?.data?.access_token
-          ),
-        },
-      });
-    } else {
-      return { error: "Invalid OTP", step: "otp", email };
     }
   }
 

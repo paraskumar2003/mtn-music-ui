@@ -5,11 +5,20 @@ interface LoginPayload {
   email: string;
   name: string;
   mobile: string;
+  dateOfBirth: string;
+  gender: string;
+  educationLevel: string;
+  currentRole: string;
+  organization: string;
+  assessmentPurpose: string;
+  workExperience: string;
+  priorTests: boolean;
 }
 
 interface VerifyOtpPayload {
   email: string;
   otp: string;
+  userData?: any;
 }
 
 interface T extends AxiosResponse<any, any> {}
