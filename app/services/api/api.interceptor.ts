@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 let globalLoadingState: ((loading: boolean) => void) | null = null;
 
 export const setGlobalLoadingHandler = (
-  handler: (loading: boolean) => void
+  handler: (loading: boolean) => void,
 ) => {
   globalLoadingState = handler;
 };
@@ -62,7 +62,7 @@ class ApiServices {
           globalLoadingState(false);
         }
         return Promise.reject(error);
-      }
+      },
     );
   }
 
@@ -98,18 +98,18 @@ class ApiServices {
           toast.error(
             typeof error?.response?.data?.message == "string"
               ? error?.response?.data?.message
-              : error.response.data.message[0] || error?.message
+              : error.response.data.message[0] || error?.message,
           );
         }
         return Promise.reject(error);
-      }
+      },
     );
   }
 
   // Generic GET request
   static async get<T>(
     url: string,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
   ): Promise<AxiosResponse<T>> {
     return this.instance.get(url, config);
   }
@@ -118,7 +118,7 @@ class ApiServices {
   static async post<T>(
     url: string,
     data: any,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
   ): Promise<AxiosResponse<T>> {
     return this.instance.post(url, data, config);
   }
@@ -127,7 +127,7 @@ class ApiServices {
   static async put<T>(
     url: string,
     data: any,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
   ): Promise<AxiosResponse<T>> {
     return this.instance.put(url, data, config);
   }
@@ -135,7 +135,7 @@ class ApiServices {
   // Generic DELETE request
   static async delete<T>(
     url: string,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
   ): Promise<AxiosResponse<T>> {
     return this.instance.delete(url, config);
   }

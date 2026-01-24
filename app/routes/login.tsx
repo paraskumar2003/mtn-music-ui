@@ -641,7 +641,6 @@ export async function action({ request }: Route.ActionArgs) {
       let result = await AuthServices.verifyOtp({
         email: email!,
         otp: otp!,
-        userData: userData, // Send all user data to backend
       });
 
       if (result?.err) {
