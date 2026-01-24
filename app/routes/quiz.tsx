@@ -318,7 +318,7 @@ export default function QuizPage() {
 
   const handleNextQuestion = async (
     nextQuestion: Question,
-    responseData: any
+    responseData: any,
   ) => {
     if (!nextQuestion) return;
     setQuestions((arr) => [...arr, nextQuestion || {}]);

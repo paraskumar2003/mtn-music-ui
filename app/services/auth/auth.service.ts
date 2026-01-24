@@ -13,6 +13,7 @@ interface LoginPayload {
   assessmentPurpose: string;
   workExperience: string;
   priorTests: boolean;
+  agreement: boolean;
 }
 
 interface VerifyOtpPayload {

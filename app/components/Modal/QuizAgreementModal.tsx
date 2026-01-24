@@ -26,17 +26,17 @@ const QuizAgreementModal = ({
 
           <div className="space-y-6 text-gray-700 text-sm">
             {/* Important Note Section */}
-            <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded">
+            {/* <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded">
               <h3 className="font-bold text-amber-800 mb-2">Important Note:</h3>
               <p className="text-amber-700">
                 This assessment is <span className="font-bold">NOT</span>{" "}
                 designed to qualify or quantify musical knowledge, skill, or
                 training.
               </p>
-            </div>
+            </div> */}
 
             {/* Purpose Explanation */}
-            <div>
+            {/* <div>
               <h3 className="font-semibold text-gray-800 mb-2">
                 Assessment Purpose
               </h3>
@@ -57,10 +57,10 @@ const QuizAgreementModal = ({
                   do not reflect the purpose of this assessment.
                 </p>
               </div>
-            </div>
+            </div> */}
 
             {/* Instructions */}
-            <div>
+            {/* <div>
               <h3 className="font-semibold text-gray-800 mb-2">
                 How to Respond
               </h3>
@@ -70,10 +70,10 @@ const QuizAgreementModal = ({
                 engage, and express anything you notice about the structure,
                 patterns, relationships, or impressions presented.
               </p>
-            </div>
+            </div> */}
 
             {/* Research Consent */}
-            <div className="bg-blue-50 border border-blue-100 rounded-lg p-4">
+            {/* <div className="bg-blue-50 border border-blue-100 rounded-lg p-4">
               <h3 className="font-semibold text-blue-800 mb-3">
                 Mandatory Research Consent
               </h3>
@@ -91,7 +91,7 @@ const QuizAgreementModal = ({
                 No personally identifiable information will be published or
                 disclosed.
               </p>
-            </div>
+            </div> */}
 
             {/* Assessment Details */}
             <div className="bg-gray-50 p-4 rounded-lg">

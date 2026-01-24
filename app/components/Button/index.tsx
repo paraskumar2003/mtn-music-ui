@@ -1,7 +1,7 @@
 import React, { type ButtonHTMLAttributes } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "danger" | "success";
+  variant?: "primary" | "secondary" | "danger" | "success" | "outline";
   size?: "sm" | "md" | "lg";
   loading?: boolean;
 }
@@ -27,10 +27,12 @@ const Button: React.FC<ButtonProps> = ({
       "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white focus:ring-red-500 border border-transparent",
     success:
       "bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-accent-700 text-white focus:ring-accent-500 border border-transparent",
+    outline:
+      "bg-transparent border border-primary-600 text-primary-600 hover:bg-primary-50 hover:border-primary-700 hover:text-primary-700 focus:ring-primary-500",
   };
 
   const sizeClasses = {
-    sm: "px-3 py-2 text-sm",
+    sm: "px-3 py-1.5 text-sm",
     md: "px-4 py-2.5 text-sm",
     lg: "px-6 py-3 text-base",
   };
