@@ -9,9 +9,11 @@ export class QuizServices extends ApiServices {
       const response = await this.post<T>("/quiz/initiate", {});
       return response;
     } catch (err: any) {
+      console.log("response", err?.response?.data);
+
       return {
         data: null,
-        err: err.message,
+        err: err?.response?.data?.message || err.message,
         message: err?.response?.data?.message,
       };
     }

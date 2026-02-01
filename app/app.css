@@ -42,3 +42,7 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+.react-datepicker-wrapper {
+  width: -webkit-fill-available;
+}

@@ -6,6 +6,8 @@ import { AuthServices } from "../services/auth/auth.service";
 import { accessTokenCookie } from "~/cookies/server";
 import DisclaimerModal from "~/components/Modal/DisclaimerModal";
 import ConsentModal from "~/components/Modal/ConsentModal";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -43,6 +45,7 @@ export default function Login() {
     mobile: string;
     workExperience: string;
     priorTests: string;
+    date_of_birth: string;
   }>({
     name: "",
     dateOfBirth: "",
@@ -55,6 +58,7 @@ export default function Login() {
     mobile: "",
     workExperience: "",
     priorTests: "",
+    date_of_birth: "",
   });
 
   const handleChange = (
@@ -161,8 +165,8 @@ export default function Login() {
                   />
                 </div>
 
-                {/* Date of Birth / Age */}
                 <div className="grid grid-cols-2 gap-4">
+                  {/* Date of Birth / Age */}
                   <div>
                     <label
                       className="block mb-2 text-sm font-medium text-gray-700"
@@ -170,14 +174,18 @@ export default function Login() {
                     >
                       Date of Birth *
                     </label>
+
                     <input
+                      type="date"
                       id="dateOfBirth"
                       name="dateOfBirth"
-                      type="date"
                       required
-                      value={formValues.dateOfBirth}
+                      max={new Date().toISOString().split("T")[0]} // no future date
+                      value={formValues.dateOfBirth || ""}
                       onChange={handleChange}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none text-black"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3
+                 focus:ring-2 focus:ring-blue-500 focus:outline-none
+                 text-black"
                     />
                   </div>
 
@@ -737,6 +745,7 @@ export async function action({ request }: Route.ActionArgs) {
 
   console.log("consent", formData.get("consentAgreement"));
   console.log("disclaimerAgreement", formData.get("disclaimerAgreement"));
+  console.log("dateOfBirth", formData.get("dateOfBirth"));
 
   if (actionType === "sendOtp") {
     try {

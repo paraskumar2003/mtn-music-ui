@@ -4,6 +4,7 @@ import QuizAgreementModal from "~/components/Modal/QuizAgreementModal";
 import QuizQuestion, { type Question } from "~/components/Quiz/QuizQuestion";
 import { QuizServices } from "~/services/quiz/quiz.service";
 import { useNavigate } from "react-router";
+import ErrorModal from "~/components/Modal/ErrorModal";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -297,10 +298,21 @@ export default function QuizPage() {
   };
 
   const [started, setStarted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showError, setShowError] = useState(false);
 
   const handleQuizStart = async () => {
     setLoadingQuiz(true);
-    await handleQuizInitiate();
+    let res = await handleQuizInitiate();
+
+    if (res?.error) {
+      setErrorMessage(
+        res.error || "Failed to start the quiz. Please try again.",
+      );
+      setShowError(true);
+      setLoadingQuiz(false);
+      return; // Don't set started to true if there's an error
+    }
     setLoadingQuiz(false);
     setStarted(true);
   };
@@ -390,6 +402,17 @@ export default function QuizPage() {
             </button>
           </div>
         </div>
+      )}
+
+      {showError && (
+        <ErrorModal
+          isOpen={showError}
+          onClose={() => setShowError(false)}
+          title="Error"
+          message={errorMessage}
+          actionText="OK"
+          onAction={() => setShowError(false)}
+        />
       )}
     </div>
   );
