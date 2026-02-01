@@ -45,7 +45,7 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({
   const [uploading, setUploading] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
-    null
+    null,
   );
   const [recording, setRecording] = useState(false);
   const [mediaBlob, setMediaBlob] = useState<Blob | null>(null);
@@ -252,7 +252,7 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({
               {timerActive ? "⏳ TIME LEFT" : "⏰ TIME'S UP"}
             </div>
             <div
-              className={`text-xl md:text-2xl font-bold font-mono ${timerActive ? "text-yellow-300" : "text-red-300"}`}
+              className={`text-xl md:text-2xl font-bold font-mono ${timerActive ? "text-yellow-300" : "text-yellow-300"}`}
             >
               {formatTime(timeLeft)}
             </div>
@@ -264,7 +264,7 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({
               className={`h-full rounded-full transition-all duration-1000 ease-out ${
                 timerActive
                   ? "bg-gradient-to-r from-blue-500 to-cyan-400"
-                  : "bg-gradient-to-r from-red-500 to-orange-400"
+                  : "bg-gradient-to-r from-blue-500 to-cyan-400"
               }`}
               style={{ width: `${timerProgress}%` }}
             ></div>
@@ -382,7 +382,7 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({
                   ${
                     timerActive
                       ? "bg-gray-800/30 border-gray-600 text-white"
-                      : "bg-gray-800/30 border-red-500 text-white"
+                      : "bg-gray-800/30 border-gray-600 text-white"
                   }`}
                 value={textAnswer}
                 onChange={handleTextChange}
@@ -588,7 +588,7 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({
                           if (uploadRes.err) {
                             console.error(
                               "Error uploading to S3:",
-                              uploadRes.err
+                              uploadRes.err,
                             );
                             setUploading(false);
                             return;

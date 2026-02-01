@@ -1,5 +1,4 @@
 import FadeIn from "~/components/Animate/FadeIn";
-import RiskScore from "~/components/ScoreCard";
 import AssessmentComplete from "~/components/ScoreCard/AssesmentComplete";
 
 export default function Score() {
