@@ -6,8 +6,6 @@ import { AuthServices } from "../services/auth/auth.service";
 import { accessTokenCookie } from "~/cookies/server";
 import DisclaimerModal from "~/components/Modal/DisclaimerModal";
 import ConsentModal from "~/components/Modal/ConsentModal";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 
 export function meta({}: Route.MetaArgs) {
   return [
