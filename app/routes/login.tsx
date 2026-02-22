@@ -575,6 +575,13 @@ export default function Login() {
                   </span>
                 </p>
 
+                <p className="text-center text-gray-700 text-sm mb-4">
+                  <small>
+                    If OTP mail is not found in your inbox, please check your
+                    spam or junk folder.
+                  </small>
+                </p>
+
                 {/* OTP Input */}
                 <div>
                   <label
